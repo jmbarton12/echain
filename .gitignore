@@ -2,8 +2,14 @@
 /content/*
 !/content/README.md
 
+# Device registry with kids' names (CLI-8)
+/devices.yaml
+
 # Wi-Fi credentials (NW-1)
 secrets.h
+
+# Claude Code local permissions
+.claude/settings.local.json
 
 # PlatformIO
 .pio/

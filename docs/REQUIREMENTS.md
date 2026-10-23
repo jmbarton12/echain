@@ -41,7 +41,7 @@ Priority keys: **M** = must (v1), **S** = should (v1 if cheap), **C** = could / 
 | CT-8 | Device holds at least 100 items (≈1 MB). | M |
 | CT-9 | Display state persists across sleep/reset: device resumes at the last shown item, with its shuffle order and history. | M |
 | CT-11 | **Shuffle playback**: items play in random order with no repeats until every item has been shown, then reshuffle. A new cycle never starts with the item that just ended the last one. The shuffle order is regenerated whenever a sync changes the playlist. | M |
-| CT-10 | Empty playlist shows a built-in "No pictures yet" screen with the device name. | S |
+| CT-10 | Empty playlist shows a built-in "No pictures yet" screen with the display name (or hostname if unset). | S |
 
 ## 3. Interaction
 
@@ -62,8 +62,9 @@ Priority keys: **M** = must (v1), **S** = should (v1 if cheap), **C** = could / 
 |----|-------------|-----|
 | NW-1 | **Station mode only**: device joins the home Wi-Fi. Credentials are compiled in from a gitignored `secrets.h`; a committed `secrets.example.h` documents the format. If the Wi-Fi password changes, each unit is reflashed over USB (accepted). | M |
 | NW-2 | Wi-Fi is **off** except in sync mode. | M |
-| NW-3 | In sync mode the device advertises itself over mDNS as `echain-<name>.local` (e.g. `echain-alice.local`). | M |
-| NW-4 | Sync-mode screen shows: device name, hostname, IP address, battery %, firmware version. | M |
+| NW-3 | In sync mode the device advertises itself over mDNS as `echain-<id>.local`, where `<id>` is the last 3 bytes of its Wi-Fi MAC in hex (e.g. `echain-3fa21c.local`). **No personal names are compiled into firmware or broadcast on the network.** | M |
+| NW-10 | The device stores an optional **display name** (e.g. the child's first name) in NVS. It is set over the API (API-5) and shown only on the device's own screen (NW-4, CT-10). | S |
+| NW-4 | Sync-mode screen shows: display name (if set), hostname, IP address, battery %, firmware version. | M |
 | NW-5 | Sync mode ends after **5 minutes with no requests**, or when A+B is pressed again. The device then redraws the current item and sleeps. | M |
 | NW-6 | If Wi-Fi fails to connect (~20 s timeout), show a short error screen, then return to normal operation. | M |
 | NW-7 | No authentication on the LAN API (trusted home network). | M |
@@ -92,7 +93,7 @@ A small HTTP/JSON API. Both the CLI and any future web page talk to the device o
 | API-2 | `GET /items`: the playlist (id, source type, orientation, flip, content hash). | M |
 | API-3 | Add item: upload a raw 9,472-byte frame with metadata. Quotes arrive as frames too. | M |
 | API-4 | Delete item; set playlist order; update item flags. | M |
-| API-5 | Get or set settings (rotate interval). | M |
+| API-5 | Get or set settings (rotate interval, display name). | M |
 | API-6 | Writes are atomic: a dropped connection never leaves a corrupt playlist. | M |
 | API-7 | `GET /items/<id>/frame`: download a frame so the CLI can verify it or show previews. | C |
 
@@ -109,7 +110,7 @@ A Python CLI, `echain`, run from this repo on the developer's PC.
 | CLI-5 | `echain preview <device>` renders all items to PNGs or a contact sheet locally, without a device, so dithering can be checked before syncing. | S |
 | CLI-6 | `echain status <device>` and `echain ota <device>` (firmware upload). | S |
 | CLI-7 | `--dry-run` on sync shows planned adds and removes. | S |
-| CLI-8 | Device registry `devices.yaml` (committed): each child's first name as the device name (→ `echain-<name>.local`), timer setting, flip default. Kids' first names are public in the repo (accepted). | M |
+| CLI-8 | Device registry `devices.yaml` is **gitignored**. It maps a local friendly name (also the `content/<name>/` folder) to the device's `echain-<id>` hostname, display name, timer setting and flip default. A committed `devices.example.yaml` documents the format with placeholder names. `echain sync` pushes the display name and settings to the device. | M |
 
 ## 8. Power
 
@@ -128,7 +129,7 @@ A Python CLI, `echain`, run from this repo on the developer's PC.
 | RP-2 | Firmware is **C++17 on the Arduino-ESP32 framework**, built with **PlatformIO**, library versions pinned. Code is plain and C-like (functions and structs, no class hierarchies). ESP-IDF APIs are called directly where Arduino lacks them (deep sleep, OTA rollback, watchdog). MicroPython was rejected: interpreter boot on every wake costs battery, and there's no proven driver for this panel. | M |
 | RP-7 | Host CLI is **Python 3.12+** (Pillow for decoding and dithering, `pillow-heif` for HEIC). All image decoding happens on the PC; the device never decodes JPG or PNG. | M |
 | RP-3 | Layout (proposed): `firmware/`, `tools/` (CLI), `content/` (gitignored, one folder per child), `hardware/` (case notes and links, BOM), `docs/`. | M |
-| RP-4 | `content/` and `secrets.h` are gitignored. Kids' photos are never committed. | M |
+| RP-4 | `content/`, `devices.yaml` and `secrets.h` are gitignored. Kids' photos and names are never committed. Commits use the GitHub noreply email. | M |
 | RP-5 | CI: build firmware and run CLI unit tests (dithering and packing) on push. | S |
 | RP-6 | Docs: build guide (assembly, first flash), and a "how to update content" guide. | S |
 

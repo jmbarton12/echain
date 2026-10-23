@@ -1,0 +1,18 @@
+# Copy to devices.yaml (gitignored) and fill in. See CLI-8 in docs/REQUIREMENTS.md.
+#
+# The key is a local friendly name; it must match the folder content/<key>/.
+# hostname is printed on the keychain's sync screen (A+B): echain-<last 3 MAC bytes>.
+# display_name is stored on the keychain and shown only on its own screen.
+
+devices:
+  keychain1:
+    hostname: echain-000000
+    display_name: "Kid One"
+    rotate_minutes: 60
+    flip: false
+
+  keychain2:
+    hostname: echain-000000
+    display_name: "Kid Two"
+    rotate_minutes: 60
+    flip: false

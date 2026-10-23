@@ -1,10 +1,11 @@
 # content/
 
-One folder per keychain, named after the device in `devices.yaml`:
+One folder per keychain, named after its key in `devices.yaml` (gitignored;
+see `devices.example.yaml`):
 
 ```
 content/
-  alice/
+  keychain1/
     cat.jpg
     beach.heic
     quotes.yaml
