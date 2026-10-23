@@ -1,0 +1,31 @@
+# Kids' photos and quotes: never committed (RP-4)
+/content/*
+!/content/README.md
+
+# Wi-Fi credentials (NW-1)
+secrets.h
+
+# PlatformIO
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+dist/
+build/
+
+# CLI preview output
+/preview/
+
+# Editors / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
